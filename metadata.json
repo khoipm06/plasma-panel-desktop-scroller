@@ -1,0 +1,26 @@
+{
+    "KPackageStructure": "Plasma/Applet",
+    "KPlugin": {
+        "Authors": [
+            {
+                "Email": "khoipm06@gmail.com",
+                "Name": "Khoi Pham Minh"
+            }
+        ],
+        "BugReportUrl": "https://github.com/khoipm06/plasma-panel-desktop-scroller/issues",
+        "Category": "Windows and Tasks",
+        "Description": "Switch virtual desktops by scrolling anywhere on the panel",
+        "EnabledByDefault": true,
+        "Icon": "preferences-desktop-virtual-desktops",
+        "Id": "com.github.khoipm06.panelscroller",
+        "License": "GPL-3.0-or-later",
+        "Name": "Panel Desktop Scroller",
+        "Version": "1.0.0",
+        "Website": "https://github.com/khoipm06/plasma-panel-desktop-scroller"
+    },
+    "X-Plasma-API-Minimum-Version": "6.0",
+    "X-Plasma-MainScript": "ui/main.qml",
+    "X-Plasma-Provides": [
+        "org.kde.plasma.panelscroller"
+    ]
+}

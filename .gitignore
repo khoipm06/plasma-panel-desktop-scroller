@@ -1,0 +1,10 @@
+build/
+*.plasmoid
+*.kdev4
+.directory
+*~
+*.autosave
+.vscode/
+.idea/
+__pycache__/
+*.pyc
