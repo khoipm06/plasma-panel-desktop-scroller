@@ -24,9 +24,9 @@ A lightweight KDE Plasma 6 widget that enables switching virtual desktops by scr
 
 ## Installation
 
-### Method 1: Direct Download (v1.0.5)
+### Method 1: Direct Download (v1.0.6)
 
-Download `com.github.khoipm06.panelscroller.plasmoid` from the [Latest Release (v1.0.5)](https://github.com/khoipm06/plasma-panel-desktop-scroller/releases/tag/v1.0.5) (or from the KDE Store / Pling):
+Download `com.github.khoipm06.panelscroller.plasmoid` from the [Latest Release (v1.0.6)](https://github.com/khoipm06/plasma-panel-desktop-scroller/releases/tag/v1.0.6) (or from the KDE Store / Pling):
 
 ```bash
 # New installation

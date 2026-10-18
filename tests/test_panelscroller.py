@@ -56,8 +56,8 @@ class TestPanelScroller(unittest.TestCase):
         # Inverted mode
         self.assertEqual(calc_delta(0, 120, invert=True), -120)
 
-    def test_03_edit_mode_overlay_disabled(self):
-        """Tests that fullPanelOverlay is hidden and disabled in edit mode."""
+    def test_03_overlay_default_visibility_and_enabled(self):
+        """Tests that fullPanelOverlay is instantiated, visible, and enabled by default in normal runtime mode."""
         if not HAS_PYSIDE6:
             self.skipTest("PySide6 QML dependencies not available in environment")
         engine = QQmlApplicationEngine()
@@ -127,6 +127,12 @@ class TestPanelScroller(unittest.TestCase):
 
     def test_07_package_script_hygiene(self):
         """Tests scripts/package.sh builds a clean zip archive without temporary or hidden files."""
+        import json
+        with open(os.path.join(PROJECT_ROOT, "metadata.json"), "r") as f:
+            meta = json.load(f)
+        current_version = meta.get("KPlugin", {}).get("Version")
+        self.assertTrue(bool(current_version), "Version not defined in metadata.json")
+
         res = subprocess.run(
             [os.path.join(PROJECT_ROOT, "scripts", "package.sh")],
             capture_output=True,
@@ -134,9 +140,9 @@ class TestPanelScroller(unittest.TestCase):
             check=True
         )
         pkg_path = os.path.join(PROJECT_ROOT, "build", "com.github.khoipm06.panelscroller.plasmoid")
-        versioned_pkg_path = os.path.join(PROJECT_ROOT, "build", "com.github.khoipm06.panelscroller-1.0.5.plasmoid")
-        self.assertTrue(os.path.exists(pkg_path))
-        self.assertTrue(os.path.exists(versioned_pkg_path))
+        versioned_pkg_path = os.path.join(PROJECT_ROOT, "build", f"com.github.khoipm06.panelscroller-{current_version}.plasmoid")
+        self.assertTrue(os.path.exists(pkg_path), f"Standard package missing: {pkg_path}")
+        self.assertTrue(os.path.exists(versioned_pkg_path), f"Versioned package missing: {versioned_pkg_path}")
 
         import zipfile
         with zipfile.ZipFile(pkg_path, "r") as zf:
@@ -153,13 +159,20 @@ class TestPanelScroller(unittest.TestCase):
                 self.assertFalse("tests" in name, f"Found tests: {name}")
                 self.assertFalse("docs" in name, f"Found docs: {name}")
 
-    def test_08_metadata_version_validation(self):
-        """Tests that metadata.json specifies release version 1.0.5."""
+    def test_08_release_version_consistency_and_semver(self):
+        """Tests that metadata.json version follows SemVer and is consistently referenced in README.md."""
         import json
+        import re
+
         with open(os.path.join(PROJECT_ROOT, "metadata.json"), "r") as f:
             data = json.load(f)
         version = data.get("KPlugin", {}).get("Version")
-        self.assertEqual(version, "1.0.5")
+        self.assertIsNotNone(version, "Missing KPlugin.Version in metadata.json")
+        self.assertTrue(re.match(r"^\d+\.\d+\.\d+$", version), f"Invalid SemVer: {version}")
+
+        with open(os.path.join(PROJECT_ROOT, "README.md"), "r") as f:
+            readme_text = f.read()
+        self.assertIn(f"v{version}", readme_text, f"README.md does not reference current release v{version}")
 
 if __name__ == "__main__":
     unittest.main()
