@@ -1,5 +1,9 @@
 # Panel Desktop Scroller
 
+[![Latest Release](https://img.shields.io/github/v/release/khoipm06/plasma-panel-desktop-scroller?label=release)](https://github.com/khoipm06/plasma-panel-desktop-scroller/releases)
+[![KDE Plasma 6](https://img.shields.io/badge/KDE%20Plasma-6.0+-blue.svg)](https://kde.org/plasma-desktop/)
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/License-GPL--3.0--or--later-blue.svg)](LICENSE)
+
 A lightweight KDE Plasma 6 widget that enables switching virtual desktops by scrolling anywhere on the panel.
 
 ## Features
@@ -20,7 +24,24 @@ A lightweight KDE Plasma 6 widget that enables switching virtual desktops by scr
 
 ## Installation
 
-### Method 1: Using `kpackagetool6` (Recommended)
+### Method 1: Direct Download (v1.0.5)
+
+Download `com.github.khoipm06.panelscroller.plasmoid` from the [Latest Release (v1.0.5)](https://github.com/khoipm06/plasma-panel-desktop-scroller/releases/tag/v1.0.5) (or from the KDE Store / Pling):
+
+```bash
+# New installation
+kpackagetool6 -i com.github.khoipm06.panelscroller.plasmoid
+
+# Or upgrade existing installation
+kpackagetool6 -u com.github.khoipm06.panelscroller.plasmoid
+```
+
+Restart Plasma Shell to load the widget:
+```bash
+systemctl --user restart plasma-plasmashell
+```
+
+### Method 2: Build from Source
 
 1. Clone the repository:
    ```bash
@@ -44,7 +65,7 @@ A lightweight KDE Plasma 6 widget that enables switching virtual desktops by scr
    systemctl --user restart plasma-plasmashell
    ```
 
-### Method 2: Manual Installation
+### Method 3: Manual Installation
 
 Copy the repository contents directly into your user plasmoids directory:
 
