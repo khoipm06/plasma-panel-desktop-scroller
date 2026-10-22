@@ -9,6 +9,7 @@ PlasmoidItem {
 
     readonly property bool inEditMode: Plasmoid.containment?.corona?.editMode ?? false
     readonly property bool invertScroll: Plasmoid.configuration?.invertScroll ?? false
+    readonly property bool wrapAround: Plasmoid.configuration?.wrapAround ?? false
     readonly property int scrollThreshold: Plasmoid.configuration?.scrollThreshold ?? 60
     readonly property int cooldownMs: Plasmoid.configuration?.cooldownMs ?? 280
 
@@ -124,12 +125,75 @@ PlasmoidItem {
         }
     }
 
+    function toInt(v, fallback) {
+        if (v === null || typeof v === "undefined") {
+            return fallback;
+        }
+        if (typeof v.value !== "undefined") {
+            return Number(v.value);
+        }
+        return Number(v);
+    }
+
     function switchDesktop(forward) {
-        DBus.SessionBus.asyncCall({
+        if (root.wrapAround) {
+            DBus.SessionBus.asyncCall({
+                service: "org.kde.KWin",
+                path: "/KWin",
+                iface: "org.kde.KWin",
+                member: forward ? "nextDesktop" : "previousDesktop"
+            });
+            return;
+        }
+
+        var replyCurr = DBus.SessionBus.asyncCall({
             service: "org.kde.KWin",
             path: "/KWin",
             iface: "org.kde.KWin",
-            member: forward ? "nextDesktop" : "previousDesktop"
+            member: "currentDesktop"
+        });
+        var replyCount = DBus.SessionBus.asyncCall({
+            service: "org.kde.KWin",
+            path: "/VirtualDesktopManager",
+            iface: "org.freedesktop.DBus.Properties",
+            member: "Get",
+            arguments: ["org.kde.KWin.VirtualDesktopManager", "count"]
+        });
+
+        var curr = null;
+        var total = null;
+
+        function checkAndExecute() {
+            if (curr === null || total === null) {
+                return;
+            }
+            if (!forward && curr <= 1) {
+                return;
+            }
+            if (forward && curr >= total) {
+                return;
+            }
+            var target = forward ? (curr + 1) : (curr - 1);
+            DBus.SessionBus.asyncCall({
+                service: "org.kde.KWin",
+                path: "/KWin",
+                iface: "org.kde.KWin",
+                member: "setCurrentDesktop",
+                arguments: [target]
+            });
+        }
+
+        replyCurr.finished.connect(function() {
+            if (!replyCurr.isError) {
+                curr = root.toInt(replyCurr.value, 1);
+                checkAndExecute();
+            }
+        });
+        replyCount.finished.connect(function() {
+            if (!replyCount.isError) {
+                total = root.toInt(replyCount.value, 1);
+                checkAndExecute();
+            }
         });
     }
 }

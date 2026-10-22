@@ -35,6 +35,7 @@ class TestPanelScroller(unittest.TestCase):
         obj = comp.create()
         self.assertIsNotNone(obj, "Failed to instantiate PlasmoidItem")
         self.assertEqual(obj.property("invertScroll"), False)
+        self.assertEqual(obj.property("wrapAround"), False)
         self.assertEqual(obj.property("scrollThreshold"), 60)
         self.assertEqual(obj.property("cooldownMs"), 280)
         self.assertEqual(obj.property("canSwitch"), True)
@@ -94,6 +95,7 @@ class TestPanelScroller(unittest.TestCase):
         obj = comp.create()
         self.assertIsNotNone(obj)
         self.assertEqual(obj.property("cfg_invertScroll"), False)
+        self.assertEqual(obj.property("cfg_wrapAround"), False)
         self.assertEqual(obj.property("cfg_scrollThreshold"), 60)
         self.assertEqual(obj.property("cfg_cooldownMs"), 280)
 
@@ -173,6 +175,32 @@ class TestPanelScroller(unittest.TestCase):
         with open(os.path.join(PROJECT_ROOT, "README.md"), "r") as f:
             readme_text = f.read()
         self.assertIn(f"v{version}", readme_text, f"README.md does not reference current release v{version}")
+
+    def test_09_warp_boundary_clamping_logic(self):
+        """Tests warp/wrap-around decision logic at desktop boundaries."""
+        def calculate_target(curr, total, forward, wrap):
+            if wrap:
+                if forward:
+                    return 1 if curr >= total else curr + 1
+                else:
+                    return total if curr <= 1 else curr - 1
+            else:
+                if forward:
+                    return None if curr >= total else curr + 1
+                else:
+                    return None if curr <= 1 else curr - 1
+
+        # With wrap enabled (warp=True):
+        self.assertEqual(calculate_target(curr=3, total=3, forward=True, wrap=True), 1)
+        self.assertEqual(calculate_target(curr=1, total=3, forward=False, wrap=True), 3)
+        self.assertEqual(calculate_target(curr=2, total=3, forward=True, wrap=True), 3)
+        self.assertEqual(calculate_target(curr=2, total=3, forward=False, wrap=True), 1)
+
+        # With wrap disabled (warp=False, boundary clamping):
+        self.assertIsNone(calculate_target(curr=3, total=3, forward=True, wrap=False))
+        self.assertIsNone(calculate_target(curr=1, total=3, forward=False, wrap=False))
+        self.assertEqual(calculate_target(curr=2, total=3, forward=True, wrap=False), 3)
+        self.assertEqual(calculate_target(curr=2, total=3, forward=False, wrap=False), 1)
 
 if __name__ == "__main__":
     unittest.main()

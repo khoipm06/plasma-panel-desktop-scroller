@@ -12,6 +12,7 @@ A lightweight KDE Plasma 6 widget that enables switching virtual desktops by scr
 - **Native Wayland & X11 DBus**: Uses native Qt6/Plasma 6 DBus calls (`org.kde.KWin`) directly in compositor memory with zero subshell or external process overhead.
 - **Configurable Behavior**:
   - Invert scroll direction.
+  - Enable or disable desktop wrap-around (warp) at boundaries.
   - Adjustable sensitivity threshold to prevent accidental triggering on trackpads or sensitive mouse wheels.
   - Configurable cooldown timer between switches.
 - **Zero Visual Clutter**: Invisible during normal desktop usage; reveals an icon during Plasma Edit Mode for easy repositioning or removal.

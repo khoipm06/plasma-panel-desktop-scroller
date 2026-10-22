@@ -8,6 +8,7 @@ KCM.SimpleKCM {
     id: root
 
     property alias cfg_invertScroll: invertScrollCheckBox.checked
+    property alias cfg_wrapAround: wrapAroundCheckBox.checked
     property alias cfg_scrollThreshold: scrollThresholdSpinBox.value
     property alias cfg_cooldownMs: cooldownSpinBox.value
 
@@ -16,6 +17,12 @@ KCM.SimpleKCM {
             id: invertScrollCheckBox
             Kirigami.FormData.label: i18n("Scroll direction:")
             text: i18n("Invert scroll direction")
+        }
+
+        CheckBox {
+            id: wrapAroundCheckBox
+            Kirigami.FormData.label: i18n("Navigation:")
+            text: i18n("Wrap around virtual desktops (warp)")
         }
 
         SpinBox {

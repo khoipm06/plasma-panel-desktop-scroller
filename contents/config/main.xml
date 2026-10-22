@@ -9,6 +9,9 @@
     <entry name="invertScroll" type="Bool">
       <default>false</default>
     </entry>
+    <entry name="wrapAround" type="Bool">
+      <default>false</default>
+    </entry>
     <entry name="scrollThreshold" type="Int">
       <default>60</default>
     </entry>
